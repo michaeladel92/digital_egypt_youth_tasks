@@ -1,0 +1,67 @@
+<?php
+require_once("classess/blogClass.php");
+
+
+$obj = new Blog();
+$row = $obj->update();
+
+
+$notifications = [];
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+  if(isset($_POST['submit'])){
+    $obj = new Blog($_POST['title'],$_POST['description'],$_FILES['image']);
+    $notifications = $obj->updateProcess($row['id']);
+   
+  }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>blog</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <h2>UPDATE blog</h2>
+  
+  
+  <form action="edit.php?id=<?=$row['id']?>"  method="POST" enctype="multipart/form-data">
+
+  <!-- title -->
+  <div class="form-group">
+    <label>title</label>
+    <input value="<?=isset($_POST['title']) ? $_POST['title'] : $row['title'] ?>"  type="text" class="form-control" name="title" placeholder="Enter Title">
+  </div>
+  <!-- description -->
+  <div class="form-group">
+    <label>description</label>
+    <textarea class="form-control"  name="description" placeholder="Enter description"><?=isset($_POST['description']) ? $_POST['description'] : $row['content'] ?>
+    </textarea>
+    </div>
+  <!-- start date -->
+  <div class="form-group">
+    <label>Image</label>
+    <input type="file" name="image"  class="form-control" >
+  </div>
+
+
+  <?php 
+  if(count($notifications) > 0){
+    foreach($notifications as $notification){
+      echo $notification;
+    }
+  }
+  ?>
+<button type="submit" name="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+</body>
+</html>
